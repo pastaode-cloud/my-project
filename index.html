@@ -2,45 +2,76 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>لعبة تحدي النقرات</title>
+    <title>لعبة تحدي النقرات - نسخة المحترفين</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            background-color: #1a1a1a;
-            color: cyan; /* لون يشبه ذوقك في تخصيص سطح المكتب */
+            background-color: #0f0f0f;
+            color: #00ffff; /* لون Cyan المفضل عندك */
             padding-top: 50px;
         }
+        .container {
+            border: 2px solid #00ffff;
+            display: inline-block;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px #00ffff;
+            background-color: #1a1a1a;
+        }
         #game-btn {
-            padding: 20px 40px;
-            font-size: 24px;
+            padding: 20px 50px;
+            font-size: 26px;
             cursor: pointer;
             background-color: #008cba;
             color: white;
             border: none;
-            border-radius: 10px;
-            box-shadow: 0 0 15px cyan;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,255,255,0.3);
+            transition: 0.2s;
+            margin: 20px;
         }
-        #game-btn:active { transform: scale(0.95); }
-        .score { font-size: 30px; margin: 20px; }
+        #game-btn:active { transform: scale(0.9); }
+        #game-btn:hover { background-color: #005f7a; }
+        
+        .score-box { font-size: 24px; margin: 15px; }
+        .high-score { color: #ff00ff; font-weight: bold; } /* لون مميز لأعلى نتيجة */
+        
+        #reset-btn {
+            padding: 10px 20px;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-    <h1>لعبة تحدي السرعة ⚡</h1>
-    <p>كم نقرة يمكنك القيام بها في 10 ثوانٍ؟</p>
-    
-    <div class="score">النقرات: <span id="counter">0</span></div>
-    <div class="score">الوقت المتبقي: <span id="timer">10</span> ثانية</div>
-    
-    <button id="game-btn" onclick="countClick()">اضغط هنا!</button>
-    <button id="reset-btn" onclick="resetGame()" style="display:none;">إعادة اللعب</button>
+    <div class="container">
+        <h1>⚡ تحدي السرعة ⚡</h1>
+        
+        <div class="score-box">أعلى نتيجة سجلتها: <span id="highScore" class="high-score">0</span></div>
+        <hr border="1" color="#333">
+        
+        <div class="score-box">النقرات الحالية: <span id="counter">0</span></div>
+        <div class="score-box">الوقت المتبقي: <span id="timer">10</span> ثانية</div>
+        
+        <button id="game-btn" onclick="countClick()">إبدأ النقر!</button>
+        <br>
+        <button id="reset-btn" onclick="resetGame()" style="display:none;">إعادة المحاولة</button>
+    </div>
 
     <script>
         let clicks = 0;
         let timeLeft = 10;
         let timerStarted = false;
         let interval;
+
+        // تحميل أعلى نتيجة عند فتح الصفحة
+        let savedHighScore = localStorage.getItem('maxClicks') || 0;
+        document.getElementById('highScore').innerText = savedHighScore;
 
         function countClick() {
             if (!timerStarted) {
@@ -59,11 +90,24 @@
                 document.getElementById('timer').innerText = timeLeft;
                 if (timeLeft <= 0) {
                     clearInterval(interval);
-                    alert("انتهى الوقت! مجموع نقراتك: " + clicks);
-                    document.getElementById('game-btn').style.display = 'none';
-                    document.getElementById('reset-btn').style.display = 'inline';
+                    endGame();
                 }
             }, 1000);
+        }
+
+        function endGame() {
+            alert("انتهى الوقت! مجموع نقراتك: " + clicks);
+            
+            // تحقق إذا كسر اللاعب الرقم القياسي
+            if (clicks > savedHighScore) {
+                savedHighScore = clicks;
+                localStorage.setItem('maxClicks', clicks); // حفظ الرقم في المتصفح
+                document.getElementById('highScore').innerText = clicks;
+                alert("كفوو! حققت رقم قياسي جديد 🏆");
+            }
+            
+            document.getElementById('game-btn').style.display = 'none';
+            document.getElementById('reset-btn').style.display = 'inline';
         }
 
         function resetGame() {
