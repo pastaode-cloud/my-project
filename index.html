@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لعبة تحدي النقرات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #1a1a1a;
+            color: cyan; /* لون يشبه ذوقك في تخصيص سطح المكتب */
+            padding-top: 50px;
+        }
+        #game-btn {
+            padding: 20px 40px;
+            font-size: 24px;
+            cursor: pointer;
+            background-color: #008cba;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px cyan;
+        }
+        #game-btn:active { transform: scale(0.95); }
+        .score { font-size: 30px; margin: 20px; }
+    </style>
+</head>
+<body>
+
+    <h1>لعبة تحدي السرعة ⚡</h1>
+    <p>كم نقرة يمكنك القيام بها في 10 ثوانٍ؟</p>
+    
+    <div class="score">النقرات: <span id="counter">0</span></div>
+    <div class="score">الوقت المتبقي: <span id="timer">10</span> ثانية</div>
+    
+    <button id="game-btn" onclick="countClick()">اضغط هنا!</button>
+    <button id="reset-btn" onclick="resetGame()" style="display:none;">إعادة اللعب</button>
+
+    <script>
+        let clicks = 0;
+        let timeLeft = 10;
+        let timerStarted = false;
+        let interval;
+
+        function countClick() {
+            if (!timerStarted) {
+                startTimer();
+                timerStarted = true;
+            }
+            if (timeLeft > 0) {
+                clicks++;
+                document.getElementById('counter').innerText = clicks;
+            }
+        }
+
+        function startTimer() {
+            interval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    alert("انتهى الوقت! مجموع نقراتك: " + clicks);
+                    document.getElementById('game-btn').style.display = 'none';
+                    document.getElementById('reset-btn').style.display = 'inline';
+                }
+            }, 1000);
+        }
+
+        function resetGame() {
+            clicks = 0;
+            timeLeft = 10;
+            timerStarted = false;
+            document.getElementById('counter').innerText = '0';
+            document.getElementById('timer').innerText = '10';
+            document.getElementById('game-btn').style.display = 'inline';
+            document.getElementById('reset-btn').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
